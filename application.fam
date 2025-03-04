@@ -1,0 +1,14 @@
+App(
+    appid="bt_home_remote",  # Must be unique
+    name="BT Home Remote",  # Displayed in menus
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point="bt_home_remote_app",
+    stack_size=4 * 1024,
+    requires=[
+        "gui",
+    ],
+    order=10,
+    fap_icon="app.png",
+    fap_category="Bluetooth",
+    fap_icon_assets="assets",
+)
