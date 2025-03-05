@@ -1,7 +1,7 @@
 #include "bt.h"
 #include "app.h"
 #include "bt_home_remote_icons.h"
-#include "src/utils.h"
+#include "libs/furi_utils.h"
 
 /**
  * @brief      Check if sending a request is allowed

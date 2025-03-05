@@ -24,6 +24,9 @@
 #define DRAW_PERIOD      100U
 #define RESET_KEY_PERIOD 200U
 
+#define DEFAULT_BEACON_PERIOD   20U
+#define DEFAULT_BEACON_DURATION 1000U
+
 typedef enum {
     SubmenuIndexConfigure,
     SubmenuIndexBT,

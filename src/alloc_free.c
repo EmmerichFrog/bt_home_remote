@@ -1,6 +1,6 @@
 #include "alloc_free.h"
 #include "bt.h"
-#include "utils.h"
+#include "libs/furi_utils.h"
 
 static const char* DEVICE_NAME_LABEL = "Device Name";
 static const char* BEACON_PERIOD_LABEL = "Adv. Interval";
@@ -161,7 +161,8 @@ void app_free(App* app) {
 
     if(bt_model->prev_exists) {
         furi_check(furi_hal_bt_extra_beacon_set_config(&bt_model->prev_config));
-        furi_check(furi_hal_bt_extra_beacon_set_data(bt_model->prev_data, bt_model->prev_data_len));
+        furi_check(
+            furi_hal_bt_extra_beacon_set_data(bt_model->prev_data, bt_model->prev_data_len));
     }
 
     if(bt_model->prev_active) {
