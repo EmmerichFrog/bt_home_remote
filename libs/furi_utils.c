@@ -3,7 +3,7 @@
 /**
  * @brief      Short buzz the vibration
 */
-void buzz_vibration(uint32_t ms) {
+void futils_buzz_vibration(uint32_t ms) {
     furi_hal_vibro_on(true);
     furi_delay_ms(ms);
     furi_hal_vibro_on(false);
@@ -15,7 +15,7 @@ void buzz_vibration(uint32_t ms) {
  * @param      max  maximum value
  * @return     the random number
 */
-uint32_t random_limit(int32_t min, int32_t max) {
+uint32_t futils_random_limit(int32_t min, int32_t max) {
     uint32_t rnd = furi_hal_random_get() % (max + 1 - min) + min;
     return rnd;
 }
@@ -26,7 +26,7 @@ static size_t i = 0;
  * @brief      Generate a random boolean value
  * @return     the random value
 */
-bool random_bool() {
+bool futils_random_bool() {
     if(rnd == 0 || i > 31) {
         i = 0;
         rnd = furi_hal_random_get();
@@ -42,7 +42,7 @@ bool random_bool() {
  * @param      arr  pointer to the array to be reversed
  * @param      size  the array size
 */
-void reverse_array_uint8(uint8_t* arr, size_t size) {
+void futils_reverse_array_uint8(uint8_t* arr, size_t size) {
     uint8_t temp[size];
 
     for(size_t i = 0; i < size; i++)
@@ -52,7 +52,7 @@ void reverse_array_uint8(uint8_t* arr, size_t size) {
         arr[i] = temp[i];
 }
 
-VariableItem* variable_item_init(
+VariableItem* futils_variable_item_init(
     VariableItemList* item_list,
     const char* label,
     const char* curr_value_text,
@@ -74,7 +74,11 @@ VariableItem* variable_item_init(
     return item;
 }
 
-void draw_header(Canvas* canvas, const char* title, const int8_t curr_page, const int32_t y_pos) {
+void futils_draw_header(
+    Canvas* canvas,
+    const char* title,
+    const int8_t curr_page,
+    const int32_t y_pos) {
     canvas_set_font(canvas, FontPrimary);
     canvas_draw_str(canvas, 0, y_pos, title);
     canvas_set_font(canvas, FontSecondary);
@@ -93,7 +97,7 @@ void draw_header(Canvas* canvas, const char* title, const int8_t curr_page, cons
  * @param      message  The string to format
  * @param      text_box Pointer to the TextBox object
 */
-void text_box_format_msg(char* formatted_message, const char* message, TextBox* text_box) {
+void futils_text_box_format_msg(char* formatted_message, const char* message, TextBox* text_box) {
     if(text_box == NULL) {
         FURI_LOG_E(TAG, "Invalid pointer to TextBox");
         return;
@@ -211,7 +215,7 @@ void text_box_format_msg(char* formatted_message, const char* message, TextBox* 
  * @param   ending      last delimiter
  * @return  true if the event was handled, false otherwise.
 */
-void extract_payload(
+void futils_extract_payload(
     const char* restrict string,
     FuriString* dest,
     const char* restrict beginning,

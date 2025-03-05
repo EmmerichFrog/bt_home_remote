@@ -120,7 +120,7 @@ void bt_enter_callback(void* context) {
 
     pretty_print_mac(bt_model->mac_address_str, bt_model->config.address);
     // The beacon expects the MAC address in reverse order
-    reverse_array_uint8(bt_model->config.address, EXTRA_BEACON_MAC_ADDR_SIZE);
+    futils_reverse_array_uint8(bt_model->config.address, EXTRA_BEACON_MAC_ADDR_SIZE);
     bt_model->timer_reset_beacon =
         furi_timer_alloc(timer_beacon_reset_callback, FuriTimerTypeOnce, context);
     // End Beacon
@@ -183,12 +183,12 @@ void bt_draw_callback(Canvas* canvas, void* model) {
 
         switch(bt_model->curr_page) {
         case PageFirst:
-            draw_header(canvas, "Dehum. Switch", bt_model->curr_page, 8);
+            futils_draw_header(canvas, "Dehum. Switch", bt_model->curr_page, 8);
             canvas_draw_icon(canvas, 123, 2, &I_ButtonRightSmall_3x5);
             break;
 
         case PageSecond:
-            draw_header(canvas, "MAC", bt_model->curr_page, 8);
+            futils_draw_header(canvas, "MAC", bt_model->curr_page, 8);
             canvas_draw_icon(canvas, 111, 2, &I_ButtonLeftSmall_3x5);
             canvas_draw_str(canvas, 28, 8, furi_string_get_cstr(mac_address));
             break;

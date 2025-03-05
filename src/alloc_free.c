@@ -99,10 +99,10 @@ App* app_alloc() {
     variable_item_list_set_header(app->variable_item_list_config, "Configuration");
 
     // Device Name
-    app->device_name_item = variable_item_init(
+    app->device_name_item = futils_variable_item_init(
         app->variable_item_list_config, DEVICE_NAME_LABEL, bt_model->device_name, 1, 0, NULL, NULL);
     // Beacon Period
-    app->beacon_period_item = variable_item_init(
+    app->beacon_period_item = futils_variable_item_init(
         app->variable_item_list_config,
         BEACON_PERIOD_LABEL,
         beacon_period_names[bt_model->beacon_period_idx],
@@ -111,7 +111,7 @@ App* app_alloc() {
         variable_item_setting_changed,
         app);
     // Beacon Duration
-    app->beacon_duration_item = variable_item_init(
+    app->beacon_duration_item = futils_variable_item_init(
         app->variable_item_list_config,
         BEACON_DURATION_LABEL,
         beacon_duration_names[bt_model->beacon_duration_idx],
@@ -120,7 +120,7 @@ App* app_alloc() {
         variable_item_setting_changed,
         app);
     // Randomize MAC
-    app->randomize_mac_enb_item = variable_item_init(
+    app->randomize_mac_enb_item = futils_variable_item_init(
         app->variable_item_list_config,
         RANDOMIZE_MAC_LABEL,
         randomize_mac_names[bt_model->randomize_mac_enb],
