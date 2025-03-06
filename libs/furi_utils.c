@@ -1,7 +1,8 @@
 #include "furi_utils.h"
+#include <furi_hal.h>
 
 /**
- * @brief      Short buzz the vibration
+ * @brief       Buzz the vibration for n ms
 */
 void futils_buzz_vibration(uint32_t ms) {
     furi_hal_vibro_on(true);
@@ -10,10 +11,10 @@ void futils_buzz_vibration(uint32_t ms) {
 }
 
 /**
- * @brief      Generate a random number bewteen min and max
- * @param      min  minimum value
- * @param      max  maximum value
- * @return     the random number
+ * @brief       Generate a random number bewteen min and max
+ * @param       min  minimum value
+ * @param       max  maximum value
+ * @return      the random number
 */
 uint32_t futils_random_limit(int32_t min, int32_t max) {
     uint32_t rnd = furi_hal_random_get() % (max + 1 - min) + min;
@@ -23,8 +24,8 @@ uint32_t futils_random_limit(int32_t min, int32_t max) {
 static uint32_t rnd;
 static size_t i = 0;
 /**
- * @brief      Generate a random boolean value
- * @return     the random value
+ * @brief       Generate a random boolean value
+ * @return      the random value
 */
 bool futils_random_bool() {
     if(rnd == 0 || i > 31) {
@@ -38,9 +39,9 @@ bool futils_random_bool() {
 }
 
 /**
- * @brief      Reverse an uint8_t array
- * @param      arr  pointer to the array to be reversed
- * @param      size  the array size
+ * @brief       Reverse an uint8_t array
+ * @param       arr  pointer to the array to be reversed
+ * @param       size  the array size
 */
 void futils_reverse_array_uint8(uint8_t* arr, size_t size) {
     uint8_t temp[size];
@@ -52,6 +53,17 @@ void futils_reverse_array_uint8(uint8_t* arr, size_t size) {
         arr[i] = temp[i];
 }
 
+/**
+ * @brief       Initialize a VariableItem
+ * @param       item_list       pointer to the VariableItemList
+ * @param       label           label for the setting
+ * @param       curr_value_text text for the initial value
+ * @param       values_count    number of values in the item
+ * @param       curr_idx        current value index
+ * @param       callback        function callback for value change, NULL if not used
+ * @param       context         context for the callback, NULL if not used
+ * @return      the pointer to the initialized VariableItem
+*/
 VariableItem* futils_variable_item_init(
     VariableItemList* item_list,
     const char* label,
@@ -62,11 +74,7 @@ VariableItem* futils_variable_item_init(
     void* context) {
     VariableItem* item;
 
-    if(callback && context) {
-        item = variable_item_list_add(item_list, label, values_count, callback, context);
-    } else {
-        item = variable_item_list_add(item_list, label, values_count, NULL, NULL);
-    }
+    item = variable_item_list_add(item_list, label, values_count, callback, context);
     if(curr_idx > 1) {
         variable_item_set_current_value_index(item, curr_idx);
     }
@@ -74,6 +82,13 @@ VariableItem* futils_variable_item_init(
     return item;
 }
 
+/**
+ * @brief       Draw an header to the canvas
+ * @param       canvas          pointer to the Canvas
+ * @param       title           text of the header
+ * @param       curr_page       current page number
+ * @param       y_pos           y position of the header
+*/
 void futils_draw_header(
     Canvas* canvas,
     const char* title,
@@ -92,19 +107,19 @@ void futils_draw_header(
 }
 
 /**
- * @brief      Formats the text box string.
- * @details    This function is makes the json in the text box more readable
- * @param      message  The string to format
- * @param      text_box Pointer to the TextBox object
+ * @brief      Formats the text box json string.
+ * @param      formatted_message    char* holding the formatted string, needs to be freed if not used anymore
+ * @param      message              The string to format
+ * @param      text_box             Pointer to the TextBox object
 */
 void futils_text_box_format_msg(char* formatted_message, const char* message, TextBox* text_box) {
     if(text_box == NULL) {
-        FURI_LOG_E(TAG, "Invalid pointer to TextBox");
+        FURI_LOG_E(FURI_UTILS_TAG, "Invalid pointer to TextBox");
         return;
     }
 
     if(message == NULL) {
-        FURI_LOG_E(TAG, "Invalid pointer to message");
+        FURI_LOG_E(FURI_UTILS_TAG, "Invalid pointer to message");
         return;
     }
 
@@ -119,8 +134,9 @@ void futils_text_box_format_msg(char* formatted_message, const char* message, Te
             formatted_message = NULL;
         }
 
-        if(!easy_flipper_set_buffer(&formatted_message, (message_length * 5))) {
-            FURI_LOG_E(TAG, "Failed to allocate formatted_message buffer");
+        formatted_message = (char*)malloc((message_length * 5));
+        if(!formatted_message) {
+            FURI_LOG_E(FURI_UTILS_TAG, "Failed to allocate formatted_message buffer");
             return;
         }
 
@@ -205,57 +221,4 @@ void futils_text_box_format_msg(char* formatted_message, const char* message, Te
     } else {
         text_box_set_text(text_box, "No data in payload");
     }
-}
-
-/**
- * @brief   Extract a string between the given delimiters
- * @param   string      char* where to search
-*  @param   dest        FuriString where to save the found string
- * @param   beginning   first delimiter
- * @param   ending      last delimiter
- * @return  true if the event was handled, false otherwise.
-*/
-void futils_extract_payload(
-    const char* restrict string,
-    FuriString* dest,
-    const char* restrict beginning,
-    const char* restrict ending) {
-    //
-    char *start, *end;
-    char* temp;
-    temp = NULL;
-    bool failed = false;
-    start = strstr(string, beginning);
-    end = strstr(start, ending);
-    if(start && end) {
-        temp = malloc(end - start + 1);
-
-        if(start) {
-            start += strlen(beginning);
-            if(end) {
-                char* p = memccpy(temp, start, '\0', end - start);
-                if(!p) {
-                    temp[end - start] = '\0';
-                    FURI_LOG_I(
-                        TAG,
-                        "[extract_payload]: Manually temrinating string in [temp], check sizes");
-                }
-            } else {
-                failed = true;
-            }
-        } else {
-            failed = true;
-        }
-    } else {
-        failed = true;
-    }
-
-    if(!failed) {
-        furi_string_set_str(dest, temp);
-
-    } else {
-        furi_string_set_str(dest, "cannot extract payload");
-    }
-
-    free(temp);
 }

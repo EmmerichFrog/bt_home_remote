@@ -1,3 +1,4 @@
+#include "app.h"
 #include "alloc_free.h"
 #include "bt.h"
 #include "libs/furi_utils.h"

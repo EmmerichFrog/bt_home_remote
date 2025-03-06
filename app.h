@@ -125,6 +125,8 @@ typedef struct {
     bool randomize_mac_enb;
 } BtBeacon;
 
+void save_settings(App* app);
+void load_settings(App* app);
 void variable_item_setting_changed(VariableItem* item);
 void conf_text_updated(void* context);
 uint32_t navigation_configure_callback(void* context);

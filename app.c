@@ -1,6 +1,5 @@
 #include "app.h"
 #include "src/alloc_free.h"
-#include "libs/furi_utils.h"
 #include "libs/jsmn.h"
 #include <storage/storage.h>
 
