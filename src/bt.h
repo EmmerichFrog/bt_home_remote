@@ -11,6 +11,11 @@
 
 #define BT_TAG "BT"
 
+typedef enum {
+    BTHomeShortPress = 0x01,
+    BTHomeLongPress = 0x04,
+} BTHomeEventType;
+
 void bt_enter_callback(void* context);
 void bt_exit_callback(void* context);
 void bt_draw_callback(Canvas* canvas, void* model);

@@ -41,7 +41,7 @@ bool make_packet(BtBeacon* bt_model, uint8_t* _size, uint8_t** _packet) {
     packet[i++] = 0b01000100; // BTHome Device Information
     // Actual Data
     packet[i++] = 0x3A; // Type: Object ID Button
-    packet[i++] = 0x01; // Event Press
+    packet[i++] = bt_model->event_type; // Event Press
     // Packet Id
     packet[i++] = 0x00; // Type: Packet ID
     packet[i++] = bt_model->cnt; // Packet Counter
@@ -190,11 +190,14 @@ void bt_draw_callback(Canvas* canvas, void* model) {
         case PageSecond:
             futils_draw_header(canvas, "MAC", bt_model->curr_page, 8);
             canvas_draw_icon(canvas, 111, 2, &I_ButtonLeftSmall_3x5);
-            canvas_draw_str(canvas, 28, 8, furi_string_get_cstr(mac_address));
+            canvas_draw_str(canvas, 35, 8, furi_string_get_cstr(mac_address));
             break;
 
-        case PageLast:
-
+        case PageThird:
+            futils_draw_header(canvas, "Device Name", bt_model->curr_page, 8);
+            canvas_draw_icon(canvas, 111, 2, &I_ButtonLeftSmall_3x5);
+            canvas_draw_str(canvas, 75, 8, bt_model->device_name);
+            break;
         default:
             break;
         }
@@ -259,12 +262,13 @@ bool bt_input_callback(InputEvent* event, void* context) {
             break;
         case InputKeyRight:
             p_index = bt_model->curr_page + 1;
-            if(p_index <= PageLast) {
+            if(p_index < PageLast) {
                 bt_model->curr_page = p_index;
             }
             break;
         case InputKeyOk:
             if(allow_cmd_bt(bt_model)) {
+                bt_model->event_type = BTHomeShortPress;
                 furi_thread_flags_set(app->comm_thread_id, ThreadCommSendCmd);
             }
             break;
@@ -277,6 +281,21 @@ bool bt_input_callback(InputEvent* event, void* context) {
         view_dispatcher_send_custom_event(app->view_dispatcher, EventIdBtRedrawScreen);
         return true;
     } else if(event->type == InputTypeLong) {
+        switch(event->key) {
+        case InputKeyOk:
+            if(allow_cmd_bt(bt_model)) {
+                bt_model->event_type = BTHomeLongPress;
+                furi_thread_flags_set(app->comm_thread_id, ThreadCommSendCmd);
+            }
+            break;
+        case InputKeyBack:
+            view_dispatcher_send_custom_event(app->view_dispatcher, EventIdBtCheckBack);
+            break;
+        default:
+            return false;
+        }
+        view_dispatcher_send_custom_event(app->view_dispatcher, EventIdBtRedrawScreen);
+        return true;
     }
 
     return false;
