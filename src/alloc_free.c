@@ -48,8 +48,8 @@ App* app_alloc() {
     view_set_context(app->view_bt, app);
     view_set_custom_callback(app->view_bt, view_custom_event_callback);
     view_allocate_model(app->view_bt, ViewModelTypeLockFree, sizeof(BtBeacon));
-    app->temp_device_name_size = 15;
-    app->temp_device_name = malloc(app->temp_device_name_size);
+    app->temp_device_name_size = MAX_NAME_LENGHT + 1;
+    app->temp_device_name = malloc(app->temp_device_name_size + 1);
     app->text_input_device_name = text_input_alloc();
     view_dispatcher_add_view(
         app->view_dispatcher,
@@ -63,18 +63,21 @@ App* app_alloc() {
     bt_model->config.adv_channel_map = GapAdvChannelMapAll;
     bt_model->config.adv_power_level = GapAdvPowerLevel_6dBm;
     bt_model->config.address_type = GapAddressTypePublic;
-    size_t default_name_len = strlen(furi_hal_version_get_device_name_ptr());
+    bt_model->default_name_len = strlen(furi_hal_version_get_device_name_ptr());
     bt_model->default_device_name = furi_hal_version_get_device_name_ptr();
-    bt_model->device_name = malloc(20);
+    bt_model->device_name = malloc(MAX_NAME_LENGHT + 1);
     char* p = memccpy(
-        bt_model->device_name, furi_hal_version_get_device_name_ptr(), '\0', default_name_len);
+        bt_model->device_name,
+        furi_hal_version_get_device_name_ptr(),
+        '\0',
+        bt_model->default_name_len + 1);
     if(!p) {
-        bt_model->device_name[default_name_len] = '\0';
+        bt_model->device_name[bt_model->default_name_len] = '\0';
         FURI_LOG_I(
             TAG,
             "[app_alloc]: Manually terminating string in [bt_model->device_name], check sizes");
     }
-    bt_model->device_name[default_name_len] = '\0';
+    bt_model->device_name[bt_model->default_name_len] = '\0';
     bt_model->device_name_len = strlen(bt_model->default_device_name) + 1;
     bt_model->curr_page = PageFirst;
     FURI_LOG_I(

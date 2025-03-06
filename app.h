@@ -27,6 +27,8 @@
 #define DEFAULT_BEACON_PERIOD   20U
 #define DEFAULT_BEACON_DURATION 1000U
 
+#define MAX_NAME_LENGHT 15
+
 typedef enum {
     SubmenuIndexConfigure,
     SubmenuIndexBT,
@@ -64,6 +66,7 @@ typedef enum {
 typedef enum {
     PageFirst,
     PageSecond,
+    PageThird,
     PageLast,
 } PageIndex;
 
@@ -103,21 +106,26 @@ typedef struct App {
 
 typedef struct {
     FuriMutex* worker_mutex;
-    GapExtraBeaconConfig config;
-    GapExtraBeaconConfig prev_config;
-    uint8_t prev_data[EXTRA_BEACON_MAX_DATA_SIZE];
-    uint8_t prev_data_len;
-    bool prev_active;
-    bool prev_exists;
-    uint8_t cnt;
     FuriString* mac_address_str;
     InputKey last_input;
     uint8_t status;
     FuriTimer* timer_reset_beacon;
     const char* default_device_name;
+    uint8_t default_name_len;
+    // Previous Beacon
+    GapExtraBeaconConfig prev_config;
+    uint8_t prev_data[EXTRA_BEACON_MAX_DATA_SIZE];
+    uint8_t prev_data_len;
+    bool prev_active;
+    bool prev_exists;
+    // BR Home Data
+    uint8_t cnt;
     char* device_name;
     size_t device_name_len;
     int8_t curr_page;
+    uint8_t event_type;
+    // Beacon settings
+    GapExtraBeaconConfig config;
     uint16_t beacon_period;
     uint16_t beacon_duration;
     uint8_t beacon_period_idx;

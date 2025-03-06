@@ -1,4 +1,5 @@
 #include "app.h"
+#include "libs/furi_utils.h"
 #include "src/alloc_free.h"
 #include "libs/jsmn.h"
 #include <storage/storage.h>
@@ -29,15 +30,16 @@ void save_settings(App* app) {
 
         furi_json_add_entry(json, DEVICE_NAME_KEY, bt_model->device_name);
 
+        // If the name is empty revert to default name
         if(strlen(bt_model->device_name) == 0) {
             FURI_LOG_I(TAG, "%s", bt_model->default_device_name);
             char* p = memccpy(
                 bt_model->device_name,
                 bt_model->default_device_name,
                 '\0',
-                bt_model->device_name_len);
+                bt_model->default_name_len + 1);
             if(!p) {
-                bt_model->device_name[bt_model->device_name_len - 1] = '\0';
+                bt_model->device_name[bt_model->default_name_len] = '\0';
                 FURI_LOG_I(
                     TAG,
                     "[save_settings]: Manually terminating string in [bt_model->device_name], check sizes");
@@ -98,35 +100,27 @@ void load_settings(App* app) {
 
     char* value;
     value = get_json_value(DEVICE_NAME_KEY, furi_string_get_cstr(json), max_tokens);
-    if(value) {
-        if(strlen(value) > 0) {
-            char* p = memccpy(bt_model->device_name, value, '\0', bt_model->device_name_len);
-            if(!p) {
-                bt_model->device_name[bt_model->device_name_len - 1] = '\0';
-                FURI_LOG_I(
-                    TAG,
-                    "[load_settings]: Manually terminating string in [bt_model->device_name], check sizes");
-            }
-        } else {
-            if(strlen(bt_model->device_name) == 0) {
-                char* p = memccpy(
-                    bt_model->device_name,
-                    bt_model->default_device_name,
-                    '\0',
-                    bt_model->device_name_len);
-                if(!p) {
-                    bt_model->device_name[bt_model->device_name_len - 1] = '\0';
-                    FURI_LOG_I(
-                        TAG,
-                        "[load_settings]: Manually terminating string in [bt_model->device_name], check sizes");
-                }
-                variable_item_set_current_value_text(app->device_name_item, bt_model->device_name);
-            }
-        }
-        free(value);
+    size_t value_len = value ? strlen(value) : 0;
+
+    if(value && value_len > 0) {
+        futils_copy_str(
+            bt_model->device_name,
+            value,
+            app->temp_device_name_size + 1,
+            "load_settings",
+            "bt_model->device_name");
+        bt_model->device_name_len = bt_model->default_name_len;
     } else {
-        FURI_LOG_I(TAG, "Error: Key [%s] not found while loading config.", DEVICE_NAME_KEY);
+        futils_copy_str(
+            bt_model->device_name,
+            bt_model->default_device_name,
+            bt_model->default_name_len + 1,
+            "load_settings",
+            "bt_model->device_name");
+        bt_model->device_name_len = bt_model->default_name_len;
     }
+    free(value);
+
     value = get_json_value(BEACON_PERIOD_KEY, furi_string_get_cstr(json), max_tokens);
     if(value) {
         bt_model->beacon_period_idx = strtoul(value, NULL, 10);
@@ -286,6 +280,7 @@ void conf_text_updated(void* context) {
     case ConfigTextInputDeviceName:
         char* p = memccpy(
             bt_model->device_name, app->temp_device_name, '\0', app->temp_device_name_size);
+        bt_model->device_name_len = strlen(app->temp_device_name);
         if(!p) {
             bt_model->device_name[app->temp_device_name_size] = '\0';
             FURI_LOG_I(

@@ -222,3 +222,30 @@ void futils_text_box_format_msg(char* formatted_message, const char* message, Te
         text_box_set_text(text_box, "No data in payload");
     }
 }
+
+#if MEMCCPY
+void futils_copy_str(
+    char* dest,
+    const char* src,
+    size_t size,
+    const char* dbg_func,
+    const char* dbg_name) {
+    char* p = memccpy(dest, src, '\0', size);
+    if(!p) {
+        dest[size - 1] = '\0';
+        if(dbg_func && dbg_name) {
+            FURI_LOG_I(
+                FURI_UTILS_TAG,
+                "[%s]: Manually terminating string in [%s], check sizes. Curr. value: %s",
+                dbg_func,
+                dbg_name,
+                dest);
+        } else {
+            FURI_LOG_I(
+                FURI_UTILS_TAG,
+                "Manually terminating string in check sizes. Curr. value: %s",
+                dest);
+        }
+    }
+}
+#endif
