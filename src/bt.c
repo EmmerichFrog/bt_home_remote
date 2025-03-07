@@ -190,6 +190,7 @@ void bt_draw_callback(Canvas* canvas, void* model) {
         case PageSecond:
             futils_draw_header(canvas, "MAC", bt_model->curr_page, 8);
             canvas_draw_icon(canvas, 111, 2, &I_ButtonLeftSmall_3x5);
+            canvas_draw_icon(canvas, 123, 2, &I_ButtonRightSmall_3x5);
             canvas_draw_str(canvas, 35, 8, furi_string_get_cstr(mac_address));
             break;
 
