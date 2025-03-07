@@ -19,4 +19,4 @@ To Do:
 ## Screenshots
 
 
-<img src="screenshots/home.png" alt="Home Page" width="256" height="128"> <img src="screenshots/config.png" alt="Config. Page" width="256" height="128"> <img src="screenshots/beacon1.png" alt="Beacon Page 1" width="256" height="128"> <img src="screenshots/beacon3.png" alt="Beacon Page 3" width="256" height="128"> <img src="screenshots/beacon2.png" alt="Beacon Page 2" width="256" height="128"> |<img src="screenshots/beacon_send.png" alt="Beacon Page Send" width="256" height="128">
+<img src="screenshots/home.png" alt="Home Page" width="256" height="128"> <img src="screenshots/config.png" alt="Config. Page" width="256" height="128"> <img src="screenshots/beacon1.png" alt="Beacon Page 1" width="256" height="128"> <img src="screenshots/beacon3.png" alt="Beacon Page 3" width="256" height="128"> <img src="screenshots/beacon2.png" alt="Beacon Page 2" width="256" height="128"> <img src="screenshots/beacon_send.png" alt="Beacon Page Send" width="256" height="128">
