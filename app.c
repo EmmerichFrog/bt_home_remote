@@ -22,10 +22,8 @@ void save_settings(App* app) {
     if(furi_mutex_acquire(app->config_mutex, FuriWaitForever) == FuriStatusOk) {
         FURI_LOG_I(TAG, "Saving json config...");
         BtBeacon* bt_model = view_get_model(app->view_bt);
-
         Storage* storage = furi_record_open(RECORD_STORAGE);
         File* file = storage_file_alloc(storage);
-
         FuriJson* json = furi_json_alloc();
 
         furi_json_add_entry(json, DEVICE_NAME_KEY, bt_model->device_name);
@@ -33,17 +31,13 @@ void save_settings(App* app) {
         // If the name is empty revert to default name
         if(strlen(bt_model->device_name) == 0) {
             FURI_LOG_I(TAG, "%s", bt_model->default_device_name);
-            char* p = memccpy(
+            futils_copy_str(
                 bt_model->device_name,
                 bt_model->default_device_name,
-                '\0',
-                bt_model->default_name_len + 1);
-            if(!p) {
-                bt_model->device_name[bt_model->default_name_len] = '\0';
-                FURI_LOG_I(
-                    TAG,
-                    "[save_settings]: Manually terminating string in [bt_model->device_name], check sizes");
-            }
+                bt_model->default_name_len + 1,
+                "save_settings",
+                "bt_model->device_name");
+
             variable_item_set_current_value_text(app->device_name_item, bt_model->device_name);
         }
         furi_json_add_entry(json, BEACON_PERIOD_KEY, (uint32_t)bt_model->beacon_period_idx);
@@ -109,6 +103,7 @@ void load_settings(App* app) {
             app->temp_device_name_size + 1,
             "load_settings",
             "bt_model->device_name");
+
         bt_model->device_name_len = bt_model->default_name_len;
     } else {
         futils_copy_str(
@@ -117,6 +112,7 @@ void load_settings(App* app) {
             bt_model->default_name_len + 1,
             "load_settings",
             "bt_model->device_name");
+
         bt_model->device_name_len = bt_model->default_name_len;
     }
     free(value);
@@ -278,15 +274,13 @@ void conf_text_updated(void* context) {
     switch(app->config_index) {
     // Frame
     case ConfigTextInputDeviceName:
-        char* p = memccpy(
-            bt_model->device_name, app->temp_device_name, '\0', app->temp_device_name_size);
-        bt_model->device_name_len = strlen(app->temp_device_name);
-        if(!p) {
-            bt_model->device_name[app->temp_device_name_size] = '\0';
-            FURI_LOG_I(
-                TAG,
-                "[conf_text_updated]: Manually terminating string in [bt_model->device_name], check sizes");
-        }
+        futils_copy_str(
+            bt_model->device_name,
+            app->temp_device_name,
+            app->temp_device_name_size,
+            "conf_text_updated",
+            "bt_model->device_name");
+
         variable_item_set_current_value_text(app->device_name_item, bt_model->device_name);
         break;
     default:
@@ -329,13 +323,7 @@ void setting_item_clicked(void* context, uint32_t index) {
         return;
     }
     // Initialize temp_buffer with existing string
-    char* p = memccpy(app->temp_buffer, string, '\0', size);
-    if(!p) {
-        app->temp_buffer[size] = '\0';
-        FURI_LOG_I(
-            TAG,
-            "[settings_item_clicked]: Manually terminating string in [temp_buffer], check sizes");
-    }
+    futils_copy_str(app->temp_buffer, string, size, "setting_items_clicked", "app->temp_buffer");
     // Configure the text input
     text_input_set_result_callback(
         text_input, conf_text_updated, app, app->temp_buffer, size, false);

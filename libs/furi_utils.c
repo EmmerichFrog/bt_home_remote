@@ -248,4 +248,38 @@ void futils_copy_str(
         }
     }
 }
+#else
+void futils_copy_str(
+    char* dest,
+    const char* src,
+    size_t size,
+    const char* dbg_func,
+    const char* dbg_name) {
+    int32_t ret = snprintf(dest, size, "%s", src);
+    if(ret > (int32_t)size) {
+        if(dbg_func && dbg_name) {
+            FURI_LOG_I(
+                FURI_UTILS_TAG,
+                "[%s]: Possibly truncated string in [%s], check sizes. Curr. value: %s",
+                dbg_func,
+                dbg_name,
+                dest);
+        } else {
+            FURI_LOG_I(
+                FURI_UTILS_TAG,
+                "Possibly truncated  string in check sizes. Curr. value: %s",
+                dest);
+        }
+    } else if(ret < 0) {
+        if(dbg_func && dbg_name) {
+            FURI_LOG_I(
+                FURI_UTILS_TAG,
+                "[%s]: Failed to encode string [%s], check parameters.",
+                dbg_func,
+                dbg_name);
+        } else {
+            FURI_LOG_I(FURI_UTILS_TAG, "Failed to encode string, check parameters.");
+        }
+    }
+}
 #endif

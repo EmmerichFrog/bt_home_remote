@@ -66,17 +66,13 @@ App* app_alloc() {
     bt_model->default_name_len = strlen(furi_hal_version_get_device_name_ptr());
     bt_model->default_device_name = furi_hal_version_get_device_name_ptr();
     bt_model->device_name = malloc(MAX_NAME_LENGHT + 1);
-    char* p = memccpy(
+    futils_copy_str(
         bt_model->device_name,
-        furi_hal_version_get_device_name_ptr(),
-        '\0',
-        bt_model->default_name_len + 1);
-    if(!p) {
-        bt_model->device_name[bt_model->default_name_len] = '\0';
-        FURI_LOG_I(
-            TAG,
-            "[app_alloc]: Manually terminating string in [bt_model->device_name], check sizes");
-    }
+        bt_model->default_device_name,
+        bt_model->default_name_len + 1,
+        "app_alloc",
+        "bt_model->device_name");
+
     bt_model->device_name[bt_model->default_name_len] = '\0';
     bt_model->device_name_len = strlen(bt_model->default_device_name) + 1;
     bt_model->curr_page = PageFirst;

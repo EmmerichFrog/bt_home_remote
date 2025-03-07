@@ -115,7 +115,7 @@ void bt_enter_callback(void* context) {
     if(bt_model->randomize_mac_enb) {
         randomize_mac(bt_model->config.address);
     } else {
-        memcpy(bt_model->config.address, fixed_mac, EXTRA_BEACON_MAC_ADDR_SIZE * sizeof(uint8_t));
+        memcpy(bt_model->config.address, fixed_mac, EXTRA_BEACON_MAC_ADDR_SIZE);
     }
 
     pretty_print_mac(bt_model->mac_address_str, bt_model->config.address);
