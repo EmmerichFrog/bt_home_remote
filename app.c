@@ -100,11 +100,12 @@ void load_settings(App* app) {
         futils_copy_str(
             bt_model->device_name,
             value,
-            app->temp_device_name_size + 1,
+            MAX_NAME_LENGHT + 1,
             "load_settings",
             "bt_model->device_name");
 
-        bt_model->device_name_len = bt_model->default_name_len;
+        bt_model->device_name_len = strlen(bt_model->device_name);
+
     } else {
         futils_copy_str(
             bt_model->device_name,
@@ -280,7 +281,7 @@ void conf_text_updated(void* context) {
             app->temp_device_name_size,
             "conf_text_updated",
             "bt_model->device_name");
-
+        bt_model->device_name_len = strlen(bt_model->device_name);
         variable_item_set_current_value_text(app->device_name_item, bt_model->device_name);
         break;
     default:

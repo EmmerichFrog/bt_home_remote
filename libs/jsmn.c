@@ -443,7 +443,7 @@ char* get_json_value(const char* restrict key, const char* restrict json_data, u
                     return NULL;
                 }
                 futils_copy_str(
-                    value, json_data + tokens[i + 1].start, length, "get_json_value", value);
+                    value, json_data + tokens[i + 1].start, length + 1, "get_json_value", value);
                 free(tokens); // Free the token array
                 return value; // Return the extracted value
             }
