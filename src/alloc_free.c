@@ -142,7 +142,15 @@ App* app_alloc() {
     easy_flipper_set_widget(
         &app->widget_about, ViewAbout, NULL, navigation_submenu_callback, &app->view_dispatcher);
     widget_reset(app->widget_about);
-    widget_add_text_scroll_element(app->widget_about, 0, 0, 128, 64, "Test");
+    char about_text[] =
+        "You need a device that\nunderstand the BT Home\n specification.\nThe app was tested on Home Assistant. \
+        \nIf the bluetooth integration\nis enabled correctly, BT Home\ndevices should be \nautomatically found by HA\n(HA documentation:\nwww.home-assistant.io/integrations/bthome/). \
+        \nAfter that, it can\nbe used as a normal BT Home\nbutton in Home Assistand\nAutomations. \
+        \n\nIn the config page the device\nname can be customized.\nThe default beacon settings\nshould be fine, but depending\non the BT receiver they might\nneed to be adjusted. \
+        \nTo Do: \
+        \n  - allow for custom MAC,\n  right now a fixed MAC or\n  random MAC are available;\
+        \n  - release on the Flipper App\n  Store";
+    widget_add_text_scroll_element(app->widget_about, 0, 0, 128, 64, about_text);
 
     return app;
 }
