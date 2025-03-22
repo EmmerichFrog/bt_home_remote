@@ -252,7 +252,6 @@ bool bt_input_callback(InputEvent* event, void* context) {
     // Status used for drawing button presses
     bt_model->last_input = event->key;
     int8_t p_index;
-    // Ok sends the command selected with left, right or down. Up long press sends a shfhttp->utdown command
     if(event->type == InputTypeShort) {
         switch(event->key) {
         case InputKeyLeft:
