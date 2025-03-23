@@ -75,7 +75,7 @@ VariableItem* futils_variable_item_init(
     VariableItem* item;
 
     item = variable_item_list_add(item_list, label, values_count, callback, context);
-    if(curr_idx > 1) {
+    if(curr_idx >= 1) {
         variable_item_set_current_value_index(item, curr_idx);
     }
     variable_item_set_current_value_text(item, curr_value_text);
@@ -266,9 +266,7 @@ void futils_copy_str(
                 dest);
         } else {
             FURI_LOG_I(
-                FURI_UTILS_TAG,
-                "Possibly truncated  string in check sizes. Curr. value: %s",
-                dest);
+                FURI_UTILS_TAG, "Possibly truncated  string in check sizes. Curr. value: %s", dest);
         }
     } else if(ret < 0) {
         if(dbg_func && dbg_name) {
