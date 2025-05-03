@@ -34,7 +34,7 @@ App* app_alloc() {
     submenu_add_item(app->submenu, "Config", SubmenuIndexConfigure, submenu_callback, app);
     submenu_add_item(app->submenu, "BT Home Remote", SubmenuIndexBT, submenu_callback, app);
     submenu_add_item(app->submenu, "About", SubmenuIndexAbout, submenu_callback, app);
-
+    submenu_set_selected_item(app->submenu, SubmenuIndexBT);
     view_set_previous_callback(submenu_get_view(app->submenu), navigation_exit_callback);
     view_dispatcher_add_view(app->view_dispatcher, ViewSubmenu, submenu_get_view(app->submenu));
     view_dispatcher_switch_to_view(app->view_dispatcher, ViewSubmenu);
