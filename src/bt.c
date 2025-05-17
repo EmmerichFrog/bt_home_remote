@@ -39,12 +39,12 @@ bool make_packet(BtBeacon* bt_model, uint8_t* _size, uint8_t** _packet) {
     packet[i++] = 0xD2; // UUID 1
     packet[i++] = 0xFC; // UUID 2
     packet[i++] = 0b01000100; // BTHome Device Information
-    // Actual Data
-    packet[i++] = 0x3A; // Type: Object ID Button
-    packet[i++] = bt_model->event_type; // Event Press
     // Packet Id
     packet[i++] = 0x00; // Type: Packet ID
     packet[i++] = bt_model->cnt; // Packet Counter
+    // Actual Data
+    packet[i++] = 0x3A; // Type: Object ID Button
+    packet[i++] = bt_model->event_type; // Event Press
     //Device name
     packet[i++] = bt_model->device_name_len + 1; // Lenght
     packet[i++] = 0x09; // Full name
